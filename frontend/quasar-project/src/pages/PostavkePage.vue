@@ -647,8 +647,7 @@ async function spremiPromjene() {
   }
 
 
-  spremanje.value =
-    true;
+  spremanje.value = true;
 
 
   try {

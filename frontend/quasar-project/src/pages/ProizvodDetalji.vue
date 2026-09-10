@@ -768,9 +768,7 @@ export default {
 
         );
 
-        this.product =
-
-          response.data.data;
+        this.product = response.data.data;
 
         await Promise.all([
 

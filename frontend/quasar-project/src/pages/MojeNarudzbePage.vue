@@ -721,8 +721,7 @@ async function ucitajNarudzbe() {
       );
 
 
-    orders.value =
-      response.data?.data || [];
+    orders.value = response.data?.data || [];
 
   } catch (error) {
 

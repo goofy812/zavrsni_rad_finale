@@ -149,7 +149,7 @@ const routes = [
           requireAdmin: true,
         },
       },
-
+      
       {
         path: "admin/zaliha",
         component: () => import("pages/AdminZalihaPage.vue"),

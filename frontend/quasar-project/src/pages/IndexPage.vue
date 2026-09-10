@@ -1035,103 +1035,104 @@ export default {
     },
 
 
-    addToCart(productId) {
+    async addToCart(productId) {
 
       if (!productId) {
-
         this.$q.notify({
           type: "warning",
-          message:
-            "Proizvod nije dostupan za dodavanje u košaricu.",
+          message: "Proizvod nije dostupan za dodavanje u košaricu.",
           position: "top-right",
         });
-
         return;
-
       }
 
+      try {
+        // Dohvati potpune podatke proizvoda iz backenda
+        const response = await api.get(`/proizvodi/${productId}`);
+        const product = response.data?.data;
 
-      let cart = JSON.parse(
-        localStorage.getItem("terabuild_cart") || "[]"
-      );
+        if (!product) {
+          this.$q.notify({
+            type: "negative",
+            message: "Proizvod nije pronađen.",
+            position: "top-right",
+          });
+          return;
+        }
 
-
-      const existing = cart.find(
-        (item) => item.id === productId
-      );
-
-
-      if (existing) {
-
-        existing.kolicina += 1;
-
-      } else {
-
-        cart.push({
-          id: productId,
-          kolicina: 1,
-        });
-
-      }
-
-
-      localStorage.setItem(
-        "terabuild_cart",
-        JSON.stringify(cart)
-      );
-
-
-      const badge =
-        document.getElementById("cartCount");
-
-
-      if (badge) {
-
-        const count = cart.reduce(
-          (sum, item) =>
-            sum + Number(item.kolicina || 0),
-          0
+        let cart = JSON.parse(
+          localStorage.getItem("terabuild_cart") || "[]"
         );
 
-        badge.textContent = count;
+        if (!Array.isArray(cart)) {
+          cart = [];
+        }
 
-        badge.style.display =
-          count > 0
-            ? "inline-block"
-            : "none";
+        const existing = cart.find(
+          (item) => Number(item.id) === Number(productId)
+        );
 
-      }
+        if (existing) {
+          existing.kolicina = Number(existing.kolicina || 0) + 1;
+          existing.naziv = product.naziv;
+          existing.cijena = Number(product.cijena || 0);
+          existing.slika_url = product.slika_url || "";
+          existing.jedinica = product.jedinica_mjere || "kom";
+        } else {
+          cart.push({
+            id: Number(product.id_proizvod),
+            naziv: product.naziv,
+            cijena: Number(product.cijena || 0),
+            slika_url: product.slika_url || "",
+            jedinica: product.jedinica_mjere || "kom",
+            kolicina: 1,
+          });
+        }
 
+        localStorage.setItem(
+          "terabuild_cart",
+          JSON.stringify(cart)
+        );
 
-      this.$q.notify({
+        const badge = document.getElementById("cartCount");
 
-        type: "positive",
+        if (badge) {
+          const count = cart.reduce(
+            (sum, item) => sum + Number(item.kolicina || 0),
+            0
+          );
 
-        message:
-          "Proizvod je dodan u košaricu.",
+          badge.textContent = count;
+          badge.style.display = count > 0 ? "inline-block" : "none";
+        }
 
-        position: "top-right",
-
-        timeout: 3000,
-
-        actions: [
-
-          {
-            label: "Pogledaj",
-            color: "white",
-
-            handler: () => {
-
-              this.$router.push("/kosarica");
-
+        this.$q.notify({
+          type: "positive",
+          message: `"${product.naziv}" je dodan u košaricu.`,
+          position: "top-right",
+          timeout: 3000,
+          actions: [
+            {
+              label: "Pogledaj",
+              color: "white",
+              handler: () => {
+                this.$router.push("/kosarica");
+              },
             },
+          ],
+        });
+      } catch (error) {
+        console.error(
+          "Greška pri dodavanju proizvoda u košaricu:",
+          error
+        );
 
-          },
-
-        ],
-
-      });
-
+        this.$q.notify({
+          type: "negative",
+          message: "Proizvod nije moguće dodati u košaricu.",
+          position: "top-right",
+        });
+      }
     },
 
   },
