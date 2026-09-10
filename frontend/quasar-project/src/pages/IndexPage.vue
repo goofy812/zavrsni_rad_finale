@@ -891,52 +891,52 @@ export default {
         {
           id: 1,
           naziv: "Izolacijski materijali",
-          slika: "/images/kategorije/01-izolacijski-materijali.png",
+          slika: "/images/proizvodi/kategorije/01-izolacijski-materijali.png",
         },
         {
           id: 2,
           naziv: "Zidni materijali",
-          slika: "/images/kategorije/02-zidni-materijali.png",
+          slika: "/images/proizvodi/kategorije/02-zidni-materijali.png",
         },
         {
           id: 3,
           naziv: "Ljepila i mortovi",
-          slika: "/images/kategorije/03-ljepila-i-mortovi.png",
+          slika: "/images/proizvodi/kategorije/03-ljepila-i-mortovi.png",
         },
         {
           id: 4,
           naziv: "Građa i ploče",
-          slika: "/images/kategorije/04-grada-i-ploce.png",
+          slika: "/images/proizvodi/kategorije/04-grada-i-ploce.png",
         },
         {
           id: 5,
           naziv: "Cement i pijesak",
-          slika: "/images/kategorije/05-cement-i-pijesak.png",
+          slika: "/images/proizvodi/kategorije/05-cement-i-pijesak.png",
         },
         {
           id: 6,
           naziv: "Hidroizolacija",
-          slika: "/images/kategorije/06-hidroizolacija.png",
+          slika: "/images/proizvodi/kategorije/06-hidroizolacija.png",
         },
         {
           id: 7,
           naziv: "Boje i lakovi",
-          slika: "/images/kategorije/07-boje-i-lakovi.png",
+          slika: "/images/proizvodi/kategorije/07-boje-i-lakovi.png",
         },
         {
           id: 8,
           naziv: "Alat i oprema",
-          slika: "/images/kategorije/08-alat-i-oprema.png",
+          slika: "/images/proizvodi/kategorije/08-alat-i-oprema.png",
         },
         {
           id: 9,
           naziv: "Krovni materijali",
-          slika: "/images/kategorije/09-krovni-materijali.png",
+          slika: "/images/proizvodi/kategorije/09-krovni-materijali.png",
         },
         {
           id: 10,
           naziv: "Sanitarije",
-          slika: "/images/kategorije/10-sanitarije.png",
+          slika: "/images/proizvodi/kategorije/10-sanitarije.png",
         },
       ],
 

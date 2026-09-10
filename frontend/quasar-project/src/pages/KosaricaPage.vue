@@ -1,8 +1,11 @@
 <template>
+
   <q-page class="cart-page q-pa-lg">
 
     <!-- ===================================================== -->
+
     <!-- NASLOV -->
+
     <!-- ===================================================== -->
 
     <div class="page-header q-mb-xl">
@@ -10,20 +13,31 @@
       <div class="title-section">
 
         <div class="title-icon">
+
           <q-icon
+
             name="shopping_cart"
+
             size="30px"
+
           />
+
         </div>
 
         <div>
+
           <div class="page-title">
+
             Košarica
+
           </div>
 
           <div class="page-subtitle">
+
             Pregled proizvoda koje ste odabrali
+
           </div>
+
         </div>
 
       </div>
@@ -31,62 +45,97 @@
     </div>
 
 
+
     <!-- ===================================================== -->
+
     <!-- PRAZNA KOŠARICA -->
+
     <!-- ===================================================== -->
 
     <div
+
       v-if="cart.length === 0"
+
       class="empty-cart"
+
     >
 
       <div class="empty-cart-icon">
+
         <q-icon
+
           name="shopping_cart"
+
           size="75px"
+
         />
+
       </div>
 
       <div class="empty-cart-title">
+
         Vaša košarica je prazna
+
       </div>
 
       <div class="empty-cart-text">
+
         Pregledajte ponudu i dodajte proizvode u košaricu.
+
       </div>
 
       <q-btn
+
         color="primary"
+
         label="Pregledaj proizvode"
+
         icon="storefront"
+
         to="/proizvodi"
+
         class="empty-cart-button"
+
         no-caps
+
         unelevated
+
       />
 
     </div>
 
 
+
     <!-- ===================================================== -->
+
     <!-- KOŠARICA -->
+
     <!-- ===================================================== -->
 
     <div
+
       v-else
+
       class="cart-container"
+
     >
 
       <!-- =================================================== -->
+
       <!-- STAVKE -->
+
       <!-- =================================================== -->
 
       <div class="cart-list">
 
         <div
+
           v-for="item in cart"
+
           :key="item.id"
+
           class="cart-item"
+
         >
 
           <!-- SLIKA -->
@@ -94,12 +143,19 @@
           <div class="cart-image-wrapper">
 
             <q-img
+
               :src="
+
                 item.slika_url ||
+
                 '/images/product-placeholder.jpg'
+
               "
+
               class="cart-image"
+
               fit="contain"
+
             >
 
               <template v-slot:error>
@@ -107,9 +163,13 @@
                 <div class="image-error">
 
                   <q-icon
+
                     name="image_not_supported"
+
                     size="32px"
+
                     color="grey-5"
+
                   />
 
                 </div>
@@ -121,21 +181,27 @@
           </div>
 
 
+
           <!-- PROIZVOD -->
 
           <div class="cart-product">
 
             <div class="product-name">
+
               {{ item.naziv }}
+
             </div>
 
             <div class="product-price">
 
               {{ Number(item.cijena).toFixed(2) }}
+
               €
 
               <span>
+
                 / {{ item.jedinica || "kom" }}
+
               </span>
 
             </div>
@@ -143,38 +209,59 @@
           </div>
 
 
+
           <!-- KOLIČINA -->
 
           <div class="quantity-section">
 
             <div class="quantity-label">
+
               Količina
+
             </div>
 
             <div class="quantity-controls">
 
               <q-btn
+
                 round
+
                 dense
+
                 flat
+
                 icon="remove"
+
                 size="sm"
+
                 color="grey-5"
+
                 @click="updateQty(item.id, -1)"
+
               />
 
               <div class="quantity-value">
+
                 {{ item.kolicina }}
+
               </div>
 
               <q-btn
+
                 round
+
                 dense
+
                 flat
+
                 icon="add"
+
                 size="sm"
+
                 color="primary"
+
                 @click="updateQty(item.id, 1)"
+
               />
 
             </div>
@@ -182,21 +269,29 @@
           </div>
 
 
+
           <!-- UKUPNO -->
 
           <div class="item-total">
 
             <div class="item-total-label">
+
               Ukupno
+
             </div>
 
             <div class="item-total-price">
 
               {{
+
                 (
+
                   Number(item.cijena) *
+
                   Number(item.kolicina)
+
                 ).toFixed(2)
+
               }}
 
               €
@@ -206,20 +301,29 @@
           </div>
 
 
+
           <!-- BRISANJE -->
 
           <div class="remove-section">
 
             <q-btn
+
               round
+
               flat
+
               color="negative"
+
               icon="delete_outline"
+
               @click="removeFromCart(item.id)"
+
             >
 
               <q-tooltip>
+
                 Ukloni proizvod
+
               </q-tooltip>
 
             </q-btn>
@@ -231,8 +335,11 @@
       </div>
 
 
+
       <!-- =================================================== -->
+
       <!-- SAŽETAK -->
+
       <!-- =================================================== -->
 
       <div class="cart-summary">
@@ -242,26 +349,43 @@
         <div class="summary-actions">
 
           <q-btn
+
             color="negative"
+
             icon="delete_sweep"
+
             label="Isprazni košaricu"
+
             flat
+
             no-caps
+
             class="summary-button"
+
             @click="clearCart"
+
           />
 
           <q-btn
+
             color="primary"
+
             icon="arrow_back"
+
             label="Nastavi kupnju"
+
             flat
+
             no-caps
+
             class="summary-button"
+
             to="/proizvodi"
+
           />
 
         </div>
+
 
 
         <!-- DESNA STRANA -->
@@ -269,35 +393,53 @@
         <div class="summary-total">
 
           <div class="total-heading">
+
             Sažetak narudžbe
+
           </div>
 
           <div class="total-row">
 
             <span>
+
               Ukupno:
+
             </span>
 
             <strong>
+
               {{ total.toFixed(2) }} €
+
             </strong>
 
           </div>
 
           <div class="tax-info">
+
             Cijena uključuje PDV
+
           </div>
 
 
+
           <q-btn
+
             color="positive"
+
             icon="shopping_cart_checkout"
+
             label="Završi narudžbu"
+
             size="lg"
+
             unelevated
+
             no-caps
+
             class="checkout-btn"
+
             @click="checkout"
+
           />
 
         </div>
@@ -307,14 +449,18 @@
     </div>
 
   </q-page>
+
 </template>
 
 
+
 <script>
+import { api } from "boot/axios";
 
 export default {
 
   name: "KosaricaPage",
+
 
 
   data() {
@@ -328,10 +474,13 @@ export default {
   },
 
 
+
   computed: {
 
     // =====================================================
+
     // UKUPNA CIJENA
+
     // =====================================================
 
     total() {
@@ -355,6 +504,7 @@ export default {
   },
 
 
+
   mounted() {
 
     this.loadCart();
@@ -362,51 +512,76 @@ export default {
   },
 
 
+
   methods: {
 
     // =====================================================
+
     // UČITAJ KOŠARICU
+
     // =====================================================
 
-    loadCart() {
-
+    async loadCart() {
       try {
+        const savedCart = localStorage.getItem("terabuild_cart");
+        this.cart = JSON.parse(savedCart || "[]");
 
-        const savedCart =
-          localStorage.getItem(
-            "terabuild_cart"
-          );
+        if (!Array.isArray(this.cart)) this.cart = [];
 
-        this.cart = JSON.parse(
-          savedCart || "[]"
-        );
+        const updatedCart = [];
 
+        for (const item of this.cart) {
+          const id = Number(item.id);
+          if (!Number.isInteger(id) || id <= 0) continue;
 
-        if (!Array.isArray(this.cart)) {
+          try {
+            const response = await api.get(`/proizvodi/${id}`);
+            const product = response.data?.data;
 
-          this.cart = [];
+            if (product) {
+              updatedCart.push({
+                id: Number(product.id_proizvod || id),
+                naziv: product.naziv || item.naziv || "Proizvod",
+                cijena: Number(product.cijena ?? item.cijena ?? 0),
+                slika_url: product.slika_url || item.slika_url || "",
+                jedinica: product.jedinica_mjere || item.jedinica || "kom",
+                kolicina: Math.max(1, Number(item.kolicina || 1)),
+              });
+            } else if (item.naziv && Number.isFinite(Number(item.cijena))) {
+              updatedCart.push({
+                ...item,
+                id,
+                cijena: Number(item.cijena || 0),
+                jedinica: item.jedinica || "kom",
+                kolicina: Math.max(1, Number(item.kolicina || 1)),
+              });
+            }
+          } catch (productError) {
+            console.error(`Greška pri dohvaćanju proizvoda ${id}:`, productError);
 
+            if (item.naziv && Number.isFinite(Number(item.cijena))) {
+              updatedCart.push({
+                ...item,
+                id,
+                cijena: Number(item.cijena || 0),
+                jedinica: item.jedinica || "kom",
+                kolicina: Math.max(1, Number(item.kolicina || 1)),
+              });
+            }
+          }
         }
 
+        this.cart = updatedCart;
+        this.saveCart();
       } catch (error) {
-
-        console.error(
-          "Greška pri učitavanju košarice:",
-          error
-        );
-
+        console.error("Greška pri učitavanju košarice:", error);
         this.cart = [];
-
       }
 
-
       this.updateCartBadge();
-
     },
-
-
-    // =====================================================
     // SPREMI KOŠARICU
+
     // =====================================================
 
     saveCart() {
@@ -414,18 +589,25 @@ export default {
       try {
 
         localStorage.setItem(
+
           "terabuild_cart",
+
           JSON.stringify(this.cart)
+
         );
 
       } catch (error) {
 
         console.error(
+
           "Greška pri spremanju košarice:",
+
           error
+
         );
 
       }
+
 
 
       this.updateCartBadge();
@@ -433,20 +615,27 @@ export default {
     },
 
 
+
     // =====================================================
+
     // BADGE
+
     // =====================================================
 
     updateCartBadge() {
 
       const count =
+
         this.cart.reduce(
 
           (sum, item) =>
 
             sum +
+
             Number(
+
               item.kolicina || 0
+
             ),
 
           0
@@ -454,20 +643,29 @@ export default {
         );
 
 
+
       const badge =
+
         document.getElementById(
+
           "cartCount"
+
         );
+
 
 
       if (badge) {
 
         badge.textContent =
+
           count;
 
         badge.style.display =
+
           count > 0
+
             ? "inline-block"
+
             : "none";
 
       }
@@ -475,18 +673,27 @@ export default {
     },
 
 
+
     // =====================================================
+
     // PROMJENA KOLIČINE
+
     // =====================================================
 
     updateQty(id, change) {
 
       const item =
+
         this.cart.find(
+
           (i) =>
+
             Number(i.id) ===
+
             Number(id)
+
         );
+
 
 
       if (!item) {
@@ -496,21 +703,31 @@ export default {
       }
 
 
+
       item.kolicina =
+
         Number(item.kolicina) +
+
         Number(change);
+
 
 
       if (item.kolicina <= 0) {
 
         this.cart =
+
           this.cart.filter(
+
             (i) =>
+
               Number(i.id) !==
+
               Number(id)
+
           );
 
       }
+
 
 
       this.saveCart();
@@ -518,29 +735,45 @@ export default {
     },
 
 
+
     // =====================================================
+
     // UKLONI PROIZVOD
+
     // =====================================================
 
     removeFromCart(id) {
 
       const item =
+
         this.cart.find(
+
           (i) =>
+
             Number(i.id) ===
+
             Number(id)
+
         );
+
 
 
       this.cart =
+
         this.cart.filter(
+
           (i) =>
+
             Number(i.id) !==
+
             Number(id)
+
         );
 
 
+
       this.saveCart();
+
 
 
       this.$q.notify({
@@ -548,7 +781,9 @@ export default {
         type: "warning",
 
         message: item
+
           ? `"${item.naziv}" uklonjen iz košarice.`
+
           : "Proizvod uklonjen iz košarice.",
 
         position: "top-right",
@@ -558,8 +793,11 @@ export default {
     },
 
 
+
     // =====================================================
+
     // ISPRAZNI
+
     // =====================================================
 
     clearCart() {
@@ -569,9 +807,11 @@ export default {
         .dialog({
 
           title:
+
             "Isprazni košaricu",
 
           message:
+
             "Jeste li sigurni da želite ukloniti sve proizvode iz košarice?",
 
           persistent: true,
@@ -579,12 +819,15 @@ export default {
           ok: {
 
             label:
+
               "Isprazni",
 
             color:
+
               "negative",
 
             noCaps:
+
               true,
 
           },
@@ -592,12 +835,15 @@ export default {
           cancel: {
 
             label:
+
               "Odustani",
 
             flat:
+
               true,
 
             noCaps:
+
               true,
 
           },
@@ -611,15 +857,19 @@ export default {
           this.saveCart();
 
 
+
           this.$q.notify({
 
             type:
+
               "info",
 
             message:
+
               "Košarica je ispražnjena.",
 
             position:
+
               "top-right",
 
           });
@@ -629,8 +879,11 @@ export default {
     },
 
 
+
     // =====================================================
+
     // CHECKOUT
+
     // =====================================================
 
     checkout() {
@@ -642,12 +895,15 @@ export default {
         this.$q.notify({
 
           type:
+
             "warning",
 
           message:
+
             "Košarica je prazna!",
 
           position:
+
             "top-right",
 
         });
@@ -657,12 +913,17 @@ export default {
       }
 
 
+
       // Provjera prijave
 
       const token =
+
         localStorage.getItem(
+
           "terabuild_token"
+
         );
+
 
 
       if (!token) {
@@ -670,24 +931,31 @@ export default {
         this.$q.notify({
 
           type:
+
             "warning",
 
           message:
+
             "Za završetak narudžbe morate se prijaviti.",
 
           position:
+
             "top-right",
 
         });
 
 
+
         this.$router.push(
+
           "/prijava"
+
         );
 
         return;
 
       }
+
 
 
       // Spremi košaricu za checkout
@@ -699,7 +967,9 @@ export default {
           "terabuild_checkout",
 
           JSON.stringify(
+
             this.cart
+
           )
 
         );
@@ -715,15 +985,19 @@ export default {
         );
 
 
+
         this.$q.notify({
 
           type:
+
             "negative",
 
           message:
+
             "Podaci košarice nisu mogli biti spremljeni.",
 
           position:
+
             "top-right",
 
         });
@@ -733,10 +1007,13 @@ export default {
       }
 
 
+
       // Otvori checkout
 
       this.$router.push(
+
         "/placanje"
+
       );
 
     },
@@ -748,23 +1025,31 @@ export default {
 </script>
 
 
+
 <style scoped>
 
 /* ========================================================= */
+
 /* GLAVNA STRANICA */
+
 /* ========================================================= */
 
 .cart-page {
+
   min-height: 100vh;
 
   background: #17191b;
 
   color: #f5f5f5;
+
 }
 
 
+
 /* ========================================================= */
+
 /* HEADER */
+
 /* ========================================================= */
 
 .page-header {
@@ -776,9 +1061,11 @@ export default {
   padding-bottom: 20px;
 
   border-bottom:
+
     1px solid #2b3033;
 
 }
+
 
 
 .title-section {
@@ -790,6 +1077,7 @@ export default {
   gap: 16px;
 
 }
+
 
 
 .title-icon {
@@ -807,14 +1095,17 @@ export default {
   border-radius: 14px;
 
   background:
+
     rgba(25, 118, 210, 0.14);
 
   border:
+
     1px solid rgba(25, 118, 210, 0.4);
 
   color: #42a5f5;
 
 }
+
 
 
 .page-title {
@@ -824,6 +1115,7 @@ export default {
   font-weight: 800;
 
 }
+
 
 
 .page-subtitle {
@@ -837,8 +1129,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* PRAZNA KOŠARICA */
+
 /* ========================================================= */
 
 .empty-cart {
@@ -864,14 +1159,17 @@ export default {
   background: #1d2022;
 
   border:
+
     1px solid #2b3033;
 
   border-radius: 20px;
 
   box-shadow:
+
     0 10px 35px rgba(0, 0, 0, 0.2);
 
 }
+
 
 
 .empty-cart-icon {
@@ -889,11 +1187,13 @@ export default {
   border-radius: 50%;
 
   background:
+
     rgba(25, 118, 210, 0.1);
 
   color: #42a5f5;
 
 }
+
 
 
 .empty-cart-title {
@@ -907,6 +1207,7 @@ export default {
 }
 
 
+
 .empty-cart-text {
 
   margin-top: 8px;
@@ -916,6 +1217,7 @@ export default {
   font-size: 15px;
 
 }
+
 
 
 .empty-cart-button {
@@ -933,8 +1235,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* KOŠARICA */
+
 /* ========================================================= */
 
 .cart-container {
@@ -946,8 +1251,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* LISTA */
+
 /* ========================================================= */
 
 .cart-list {
@@ -957,18 +1265,23 @@ export default {
   background: #1d2022;
 
   border:
+
     1px solid #2b3033;
 
   border-radius: 16px;
 
   box-shadow:
+
     0 8px 30px rgba(0, 0, 0, 0.16);
 
 }
 
 
+
 /* ========================================================= */
+
 /* STAVKA */
+
 /* ========================================================= */
 
 .cart-item {
@@ -984,12 +1297,15 @@ export default {
   gap: 20px;
 
   border-bottom:
+
     1px solid #2b3033;
 
   transition:
+
     background 0.2s ease;
 
 }
+
 
 
 .cart-item:last-child {
@@ -999,16 +1315,21 @@ export default {
 }
 
 
+
 .cart-item:hover {
 
   background:
+
     rgba(255, 255, 255, 0.025);
 
 }
 
 
+
 /* ========================================================= */
+
 /* SLIKA */
+
 /* ========================================================= */
 
 .cart-image-wrapper {
@@ -1032,9 +1353,11 @@ export default {
   overflow: hidden;
 
   border:
+
     1px solid #303438;
 
 }
+
 
 
 .cart-image {
@@ -1046,6 +1369,7 @@ export default {
 }
 
 
+
 .cart-image :deep(img) {
 
   object-fit: contain !important;
@@ -1053,6 +1377,7 @@ export default {
   padding: 10px;
 
 }
+
 
 
 .image-error {
@@ -1072,8 +1397,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* PROIZVOD */
+
 /* ========================================================= */
 
 .cart-product {
@@ -1083,6 +1411,7 @@ export default {
   min-width: 220px;
 
 }
+
 
 
 .product-name {
@@ -1098,6 +1427,7 @@ export default {
 }
 
 
+
 .product-price {
 
   margin-top: 9px;
@@ -1109,6 +1439,7 @@ export default {
 }
 
 
+
 .product-price span {
 
   color: #737d84;
@@ -1116,8 +1447,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* KOLIČINA */
+
 /* ========================================================= */
 
 .quantity-section {
@@ -1133,6 +1467,7 @@ export default {
 }
 
 
+
 .quantity-label {
 
   margin-bottom: 8px;
@@ -1142,6 +1477,7 @@ export default {
   font-size: 12px;
 
 }
+
 
 
 .quantity-controls {
@@ -1157,11 +1493,13 @@ export default {
   background: #24282b;
 
   border:
+
     1px solid #353b3f;
 
   border-radius: 10px;
 
 }
+
 
 
 .quantity-value {
@@ -1179,8 +1517,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* UKUPNO */
+
 /* ========================================================= */
 
 .item-total {
@@ -1190,6 +1531,7 @@ export default {
   text-align: right;
 
 }
+
 
 
 .item-total-label {
@@ -1203,6 +1545,7 @@ export default {
 }
 
 
+
 .item-total-price {
 
   font-size: 21px;
@@ -1214,8 +1557,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* BRISANJE */
+
 /* ========================================================= */
 
 .remove-section {
@@ -1229,8 +1575,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* SAŽETAK */
+
 /* ========================================================= */
 
 .cart-summary {
@@ -1250,6 +1599,7 @@ export default {
   background: #1d2022;
 
   border:
+
     1px solid #2b3033;
 
   border-radius: 16px;
@@ -1257,8 +1607,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* AKCIJE */
+
 /* ========================================================= */
 
 .summary-actions {
@@ -1272,6 +1625,7 @@ export default {
 }
 
 
+
 .summary-button {
 
   border-radius: 8px;
@@ -1279,8 +1633,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* UKUPNO */
+
 /* ========================================================= */
 
 .summary-total {
@@ -1290,6 +1647,7 @@ export default {
   text-align: right;
 
 }
+
 
 
 .total-heading {
@@ -1307,6 +1665,7 @@ export default {
 }
 
 
+
 .total-row {
 
   display: flex;
@@ -1322,6 +1681,7 @@ export default {
 }
 
 
+
 .total-row strong {
 
   color: #42a5f5;
@@ -1331,6 +1691,7 @@ export default {
   font-weight: 800;
 
 }
+
 
 
 .tax-info {
@@ -1346,8 +1707,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* CHECKOUT */
+
 /* ========================================================= */
 
 .checkout-btn {
@@ -1361,10 +1725,13 @@ export default {
   font-weight: 700;
 
   transition:
+
     transform 0.2s ease,
+
     box-shadow 0.2s ease;
 
 }
+
 
 
 .checkout-btn:hover {
@@ -1372,13 +1739,17 @@ export default {
   transform: translateY(-2px);
 
   box-shadow:
+
     0 8px 20px rgba(33, 186, 69, 0.25);
 
 }
 
 
+
 /* ========================================================= */
+
 /* TABLET */
+
 /* ========================================================= */
 
 @media (max-width: 900px) {
@@ -1390,14 +1761,17 @@ export default {
   }
 
 
+
   .cart-product {
 
     flex: 1;
 
     min-width:
+
       calc(100% - 145px);
 
   }
+
 
 
   .quantity-section {
@@ -1411,6 +1785,7 @@ export default {
   }
 
 
+
   .item-total {
 
     width: auto;
@@ -1420,6 +1795,7 @@ export default {
   }
 
 
+
   .cart-summary {
 
     flex-direction: column;
@@ -1427,11 +1803,13 @@ export default {
   }
 
 
+
   .summary-actions {
 
     width: 100%;
 
   }
+
 
 
   .summary-total {
@@ -1443,6 +1821,7 @@ export default {
   }
 
 
+
   .total-row {
 
     justify-content: flex-start;
@@ -1452,8 +1831,11 @@ export default {
 }
 
 
+
 /* ========================================================= */
+
 /* MOBITEL */
+
 /* ========================================================= */
 
 @media (max-width: 600px) {
@@ -1465,11 +1847,13 @@ export default {
   }
 
 
+
   .page-title {
 
     font-size: 27px;
 
   }
+
 
 
   .title-icon {
@@ -1479,6 +1863,7 @@ export default {
     height: 48px;
 
   }
+
 
 
   .cart-item {
@@ -1494,6 +1879,7 @@ export default {
   }
 
 
+
   .cart-image-wrapper {
 
     width: 75px;
@@ -1505,6 +1891,7 @@ export default {
   }
 
 
+
   .cart-product {
 
     min-width: 0;
@@ -1512,11 +1899,13 @@ export default {
   }
 
 
+
   .product-name {
 
     font-size: 16px;
 
   }
+
 
 
   .quantity-section {
@@ -1530,6 +1919,7 @@ export default {
   }
 
 
+
   .item-total {
 
     width: auto;
@@ -1541,6 +1931,7 @@ export default {
   }
 
 
+
   .remove-section {
 
     justify-content: flex-end;
@@ -1548,11 +1939,13 @@ export default {
   }
 
 
+
   .cart-summary {
 
     padding: 20px;
 
   }
+
 
 
   .summary-actions {
@@ -1564,6 +1957,7 @@ export default {
   }
 
 
+
   .summary-button {
 
     width: 100%;
@@ -1571,11 +1965,13 @@ export default {
   }
 
 
+
   .summary-total {
 
     min-width: 0;
 
   }
+
 
 
   .total-row {
@@ -1587,11 +1983,13 @@ export default {
   }
 
 
+
   .total-row strong {
 
     font-size: 25px;
 
   }
+
 
 
   .checkout-btn {
