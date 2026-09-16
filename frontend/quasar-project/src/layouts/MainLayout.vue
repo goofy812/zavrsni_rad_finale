@@ -419,7 +419,6 @@ const isAdmin = ref(false);
 
 const cartCount = ref(0);
 
-const searchQuery = ref("");
 
 
 // ============================================================ //
