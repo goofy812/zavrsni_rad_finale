@@ -539,8 +539,7 @@ onMounted(
       );
 
 
-      const korisnik =
-        res.data;
+      const korisnik = res.data;
 
 
       register.value.ime =

@@ -91,35 +91,14 @@
 
 
 <script setup>
-import {
-  onMounted,
-  ref
-} from 'vue'
-
+import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
-
 import { api } from 'boot/axios'
-
-
-// ============================================================
-// INICIJALIZACIJA
-// ============================================================
 
 const $q = useQuasar()
 
-
-// ============================================================
-// PODACI
-// ============================================================
-
 const items = ref([])
-
 const loading = ref(false)
-
-
-// ============================================================
-// STUPCI TABLICE
-// ============================================================
 
 const columns = [
   {
@@ -158,119 +137,75 @@ const columns = [
   }
 ]
 
-
-// ============================================================
-// DOHVAT ZALIHE
-// ============================================================
-
 async function load() {
   loading.value = true
 
   try {
     const response = await api.get('/zaliha')
-
     items.value = response.data
-
   } catch (error) {
-    console.error(
-      'Greška pri dohvaćanju zalihe:',
-      error
-    )
+    console.error(error)
 
     $q.notify({
       type: 'negative',
-      message:
-        'Nije moguće dohvatiti podatke o zalihi.'
+      message: 'Nije moguće dohvatiti podatke o zalihi.'
     })
-
   } finally {
     loading.value = false
   }
 }
 
+function change(row, sign) {
+  const akcija = sign === 1 ? 'dodaj' : 'umanji'
 
-// ============================================================
-// PROMJENA KOLIČINE ZALIHE
-// ============================================================
+  $q.dialog({
+    title: sign === 1 ? 'Dodaj na zalihu' : 'Umanji zalihu',
+    message: 'Unesite količinu:',
+    prompt: {
+      model: '1',
+      type: 'number'
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(async (value) => {
 
-async function change(row, sign) {
+    const kolicina = Number(value)
 
-  const amount = prompt(
-    sign > 0
-      ? 'Unesite količinu za dodavanje:'
-      : 'Unesite količinu za umanjivanje:',
-    '1'
-  )
+    if (!Number.isInteger(kolicina) || kolicina <= 0) {
+      $q.notify({
+        type: 'warning',
+        message: 'Količina mora biti pozitivan cijeli broj.'
+      })
+      return
+    }
 
-  if (amount === null) {
-    return
-  }
+    try {
+      await api.post(`/zaliha/${row.id_zaliha}/${akcija}`, {
+        kolicina
+      })
 
-  const quantity = Number(amount)
+      $q.notify({
+        type: 'positive',
+        message:
+          sign === 1
+            ? `Dodano ${kolicina} komada.`
+            : `Umanjeno ${kolicina} komada.`
+      })
 
-  if (
-    !Number.isFinite(quantity) ||
-    quantity <= 0
-  ) {
-    $q.notify({
-      type: 'warning',
-      message:
-        'Količina mora biti pozitivan broj.'
-    })
+      await load()
 
-    return
-  }
+    } catch (error) {
+      console.error(error)
 
-  $q.loading.show()
-
-  try {
-
-    const action =
-      sign > 0
-        ? 'dodaj'
-        : 'umanji'
-
-    await api.post(
-      `/zaliha/${row.id_zaliha}/${action}`,
-      {
-        kolicina: quantity
-      }
-    )
-
-    $q.notify({
-      type: 'positive',
-      message:
-        sign > 0
-          ? 'Zaliha je uspješno povećana.'
-          : 'Zaliha je uspješno umanjena.'
-    })
-
-    await load()
-
-  } catch (error) {
-    console.error(
-      'Greška pri promjeni zalihe:',
-      error
-    )
-
-    $q.notify({
-      type: 'negative',
-      message:
-        error.response?.data?.message ||
-        'Promjena zalihe nije uspjela.'
-    })
-
-  } finally {
-    $q.loading.hide()
-  }
+      $q.notify({
+        type: 'negative',
+        message:
+          error.response?.data?.message ||
+          'Promjena zalihe nije uspjela.'
+      })
+    }
+  })
 }
 
-
-// ============================================================
-// INICIJALNO UČITAVANJE
-// ============================================================
-
-onMounted(() => {
-  load()
-})
+onMounted(load)
 </script>

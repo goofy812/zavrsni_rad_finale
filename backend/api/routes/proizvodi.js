@@ -13,10 +13,28 @@ const {
 // JAVNE RUTE
 // ============================================================
 
+// Dohvat samo aktivnih proizvoda
 router.get("/", proizvodiController.getAll);
 
+// Srodni proizvod
 router.get("/:id/srodni", proizvodiController.getRelated);
 
+
+// ============================================================
+// ADMIN - SVI PROIZVODI
+// Uključuje aktivne i neaktivne proizvode
+// VAŽNO: ova ruta mora biti PRIJE /:id
+// ============================================================
+
+router.get(
+    "/admin/svi",
+    authenticate,
+    isAdmin,
+    proizvodiController.getAllAdmin
+);
+
+
+// Dohvat jednog proizvoda
 router.get("/:id", proizvodiController.getOne);
 
 
@@ -24,6 +42,7 @@ router.get("/:id", proizvodiController.getOne);
 // ADMIN RUTE
 // ============================================================
 
+// Dodavanje proizvoda
 router.post(
     "/",
     authenticate,
@@ -31,6 +50,7 @@ router.post(
     proizvodiController.create
 );
 
+// Uređivanje proizvoda
 router.put(
     "/:id",
     authenticate,
@@ -38,11 +58,13 @@ router.put(
     proizvodiController.update
 );
 
+// Deaktiviranje proizvoda
 router.delete(
     "/:id",
     authenticate,
     isAdmin,
     proizvodiController.delete
 );
+
 
 module.exports = router;

@@ -251,8 +251,7 @@ async function save() {
     if (form.id_kategorija) {
 
       await api.put(
-        `/kategorije/${form.id_kategorija}`,
-        form
+        `/kategorije/${form.id_kategorija}`, form
       )
 
     }

@@ -72,32 +72,58 @@ exports.getOne = async (req, res) => {
 
 // AŽURIRAJ KATEGORIJU
 exports.update = async (req, res) => {
-    const { naziv, opis, id_nadkategorija, slika_url, redoslijed, aktivan } = req.body;
+    const { naziv, opis } = req.body;
     let conn;
 
     try {
+        if (!naziv || !naziv.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Naziv kategorije je obavezan.",
+            });
+        }
+
         conn = await pool.getConnection();
-        await conn.query(
-            `UPDATE Kategorija SET
-             naziv = ?,
-             opis = ?,
-             id_nadkategorija = ?,
-             slika_url = ?,
-             redoslijed = ?,
-             aktivan = ?,
-             datum_azuriranja = NOW()
+
+        const result = await conn.query(
+            `UPDATE Kategorija
+             SET
+                naziv = ?,
+                opis = ?,
+                datum_azuriranja = NOW()
              WHERE id_kategorija = ?`,
-            [naziv, opis || null, id_nadkategorija || null, slika_url || null, redoslijed || 0, aktivan, req.params.id]
+            [
+                naziv.trim(),
+                opis && opis.trim() ? opis.trim() : null,
+                req.params.id,
+            ]
         );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Kategorija nije pronađena.",
+            });
+        }
+
         res.json({
             success: true,
-            message: "Kategorija uspješno ažurirana",
+            message: "Kategorija uspješno ažurirana.",
         });
+
     } catch (err) {
         console.error("Greška pri ažuriranju kategorije:", err);
-        res.status(500).json({ error: err.message });
+
+        res.status(500).json({
+            success: false,
+            message: "Greška pri ažuriranju kategorije.",
+            error: err.message,
+        });
+
     } finally {
-        if (conn) conn.release();
+        if (conn) {
+            conn.release();
+        }
     }
 };
 

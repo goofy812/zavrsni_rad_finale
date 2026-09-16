@@ -338,8 +338,7 @@ export default {
             "/lista-zelja"
           );
 
-        this.products =
-          response.data?.data || [];
+        this.products = response.data?.data || [];
 
       } catch (error) {
 

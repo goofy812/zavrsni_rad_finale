@@ -838,9 +838,7 @@ export default {
 
           );
 
-        this.reviews =
-
-          response.data?.data || [];
+        this.reviews = response.data?.data || [];
 
         console.log(
 

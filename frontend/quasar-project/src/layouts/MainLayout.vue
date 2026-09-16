@@ -35,26 +35,6 @@
           </router-link>
         </q-toolbar-title>
 
-        <!-- Pretraga -->
-        <q-input
-          v-model="searchQuery"
-          dense
-          dark
-          standout
-          placeholder="Pretraži proizvode..."
-          class="q-ml-md"
-          style="width: 250px"
-          @keyup.enter="searchProducts"
-        >
-          <template v-slot:append>
-            <q-icon
-              name="search"
-              @click="searchProducts"
-              class="cursor-pointer"
-            />
-          </template>
-        </q-input>
-
         <!-- Košarica -->
         <q-btn
           flat
@@ -529,27 +509,6 @@ function updateCartCount() {
   );
 
 }
-
-
-// ============================================================ //
-// PRETRAGA
-// ============================================================ //
-
-function searchProducts() {
-
-  if (searchQuery.value.trim()) {
-
-    router.push({
-      path: "/proizvodi",
-      query: {
-        pretraga: searchQuery.value
-      }
-    });
-
-  }
-
-}
-
 
 // ============================================================ //
 // ODJAVA
