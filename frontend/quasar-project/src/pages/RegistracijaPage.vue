@@ -96,7 +96,7 @@ export default {
 
         console.log("✅ Odgovor servera:", response.data);
 
-        if (response.data.success) {
+        if (response.data.success) { 
           this.$q.notify({
             type: "positive",
             message: "Registracija uspješna!",
