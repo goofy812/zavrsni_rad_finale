@@ -22,7 +22,7 @@ function signUser(user) {
           ? "admin"
           : "kupac"),
     },
-
+ 
     JWT_SECRET,
 
     {
