@@ -17,7 +17,7 @@ const app = express();
 
 // JSON parsing
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }))
 
 // CORS - dozvoli pristup s frontenda
 app.use(
@@ -34,7 +34,7 @@ app.use(
 // ============================================================ //
 // STATIČKE DATOTEKE (ako imaš slike)
 // ============================================================ //
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ============================================================ //
 // RUTE
