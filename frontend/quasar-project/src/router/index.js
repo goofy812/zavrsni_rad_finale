@@ -20,7 +20,7 @@ function getUser() {
     let user = LocalStorage.getItem("terabuild_user");
 
     if (user) {
-      if (typeof user === "string") {
+      if (typeof user === "string") { 
         try {
           return JSON.parse(user);
         } catch {

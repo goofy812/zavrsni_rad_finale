@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A Quasar Project",
   "productName": "Quasar App",
-  "author": "Sandi Novakov <novakov.sandi@gmail.com>",
+  "author": "Tomislav Bijelić-Curkić <bijeliccurkictomislav2@gmail.com>",
   "type": "module",
   "private": true,
   "scripts": {
