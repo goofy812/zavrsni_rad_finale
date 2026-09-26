@@ -1,4 +1,7 @@
 const pool = require("../config/db");
+const fs = require("fs/promises");
+const path = require("path");
+const crypto = require("crypto");
 
 
 // ============================================================
@@ -692,6 +695,43 @@ exports.getRelated = async (req, res) => {
 
 
 // ============================================================
+// SPREMANJE UPLOADED SLIKE
+// ============================================================
+
+async function saveProductImage(req) {
+    if (!req.file) {
+        return null;
+    }
+
+    const uploadsDir = path.join(__dirname, "..", "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
+
+    const extensionByMime = {
+        "image/jpeg": ".jpg",
+        "image/png": ".png",
+        "image/webp": ".webp",
+        "image/gif": ".gif",
+    };
+
+    const extension =
+        extensionByMime[req.file.mimetype] ||
+        path.extname(req.file.originalname).toLowerCase() ||
+        ".img";
+
+    const filename =
+        `${Date.now()}-${crypto.randomBytes(8).toString("hex")}${extension}`;
+
+    await fs.writeFile(
+        path.join(uploadsDir, filename),
+        req.file.buffer
+    );
+
+    // Frontend dobiva punu URL adresu koju može odmah prikazati.
+    return `${req.protocol}://${req.get("host")}/uploads/${filename}`;
+}
+
+
+// ============================================================
 // DODAJ PROIZVOD
 // POST /api/proizvodi
 // ADMIN
@@ -716,6 +756,9 @@ exports.create = async (req, res) => {
             id_proizvodac,
             aktivan = 1,
         } = req.body;
+
+        const uploadedImageUrl = await saveProductImage(req);
+        const finalImageUrl = uploadedImageUrl || slika_url || null;
 
 
         if (
@@ -808,7 +851,7 @@ exports.create = async (req, res) => {
                     tezina || null,
                     dimenzije || null,
                     namjena || null,
-                    slika_url || null,
+                    finalImageUrl,
                     id_kategorija || null,
                     id_proizvodac || null,
                     aktivan ? 1 : 0,
@@ -937,6 +980,12 @@ exports.update = async (req, res) => {
         }
 
 
+        const uploadedImageUrl = await saveProductImage(req);
+        const finalImageUrl =
+            uploadedImageUrl ||
+            slika_url ||
+            null;
+
         await conn.query(
             `
             UPDATE Proizvod
@@ -967,7 +1016,7 @@ exports.update = async (req, res) => {
                 tezina || null,
                 dimenzije || null,
                 namjena || null,
-                slika_url || null,
+                finalImageUrl,
                 id_kategorija || null,
                 id_proizvodac || null,
                 aktivan ? 1 : 0,

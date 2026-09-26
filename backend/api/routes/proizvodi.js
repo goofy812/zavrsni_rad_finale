@@ -1,6 +1,32 @@
 const express = require("express");
+const multer = require("multer");
 
 const router = express.Router();
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024,
+    },
+    fileFilter: (req, file, cb) => {
+        const allowed = [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+        ];
+
+        if (!allowed.includes(file.mimetype)) {
+            return cb(
+                new Error(
+                    "Dozvoljene su samo JPG, PNG, WEBP i GIF slike."
+                )
+            );
+        }
+
+        cb(null, true);
+    },
+});
 
 const proizvodiController = require("../controllers/proizvodiController");
 
@@ -9,21 +35,24 @@ const {
     isAdmin
 } = require("../middleware/auth");
 
+
 // ============================================================
 // JAVNE RUTE
 // ============================================================
 
-// Dohvat samo aktivnih proizvoda
-router.get("/", proizvodiController.getAll);
+router.get(
+    "/",
+    proizvodiController.getAll
+);
 
-// Srodni proizvod
-router.get("/:id/srodni", proizvodiController.getRelated);
+router.get(
+    "/:id/srodni",
+    proizvodiController.getRelated
+);
 
 
 // ============================================================
 // ADMIN - SVI PROIZVODI
-// Uključuje aktivne i neaktivne proizvode
-// VAŽNO: ova ruta mora biti PRIJE /:id
 // ============================================================
 
 router.get(
@@ -34,31 +63,46 @@ router.get(
 );
 
 
-// Dohvat jednog proizvoda
-router.get("/:id", proizvodiController.getOne);
+// ============================================================
+// DOHVAT JEDNOG PROIZVODA
+// ============================================================
+
+router.get(
+    "/:id",
+    proizvodiController.getOne
+);
 
 
 // ============================================================
-// ADMIN RUTE
+// ADMIN - DODAVANJE PROIZVODA
 // ============================================================
 
-// Dodavanje proizvoda
 router.post(
     "/",
     authenticate,
     isAdmin,
+    upload.single("slika"),
     proizvodiController.create
 );
 
-// Uređivanje proizvoda
+
+// ============================================================
+// ADMIN - UREĐIVANJE PROIZVODA
+// ============================================================
+
 router.put(
     "/:id",
     authenticate,
     isAdmin,
+    upload.single("slika"),
     proizvodiController.update
 );
 
-// Deaktiviranje proizvoda
+
+// ============================================================
+// ADMIN - BRISANJE / DEAKTIVACIJA
+// ============================================================
+
 router.delete(
     "/:id",
     authenticate,

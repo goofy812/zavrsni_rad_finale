@@ -121,11 +121,31 @@
         outlined
       />
 
-      <q-input
-        v-model="form.slika_url"
-        label="URL slike"
+      <!-- SLIKA PROIZVODA -->
+      <q-file
+        v-model="imageFile"
+        label="Slika proizvoda"
         outlined
-      />
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        max-file-size="5242880"
+        @rejected="onImageRejected"
+        clearable
+        hint="JPG, PNG, WEBP ili GIF • najviše 5 MB"
+      >
+        <template #prepend>
+          <q-icon name="image" />
+        </template>
+      </q-file>
+
+      <!-- Pregled slike prije spremanja -->
+      <div v-if="imagePreview || form.slika_url" class="q-mt-sm">
+        <div class="text-subtitle2 q-mb-sm">Pregled slike</div>
+        <q-img
+          :src="imagePreview || form.slika_url"
+          fit="contain"
+          class="product-image-preview"
+        />
+      </div>
 
 
       <!-- STATUS PROIZVODA -->
@@ -165,7 +185,8 @@ import {
   computed,
   onMounted,
   reactive,
-  ref
+  ref,
+  watch
 } from 'vue'
 
 import {
@@ -224,6 +245,37 @@ const form = reactive({
   id_kategorija: null,
   id_proizvodac: null,
   aktivan: true
+})
+
+// Datoteka koju je korisnik odabrao za upload.
+const imageFile = ref(null)
+const imagePreview = ref('')
+
+function updateImagePreview(file) {
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value)
+    imagePreview.value = ''
+  }
+
+  if (file) {
+    imagePreview.value = URL.createObjectURL(file)
+  }
+}
+
+function onImageRejected(rejectedEntries) {
+  const reason = rejectedEntries?.[0]?.failedPropValidation
+
+  $q.notify({
+    type: 'negative',
+    message: reason === 'max-file-size'
+      ? 'Slika je prevelika. Maksimalna veličina je 5 MB.'
+      : 'Odabrana datoteka nije podržana.'
+  })
+}
+
+
+watch(imageFile, (file) => {
+  updateImagePreview(file)
 })
 
 
@@ -289,25 +341,41 @@ async function save() {
   loading.value = true
 
   try {
+    // Slike se šalju kao multipart/form-data.
+    // Ostali podaci proizvoda ostaju obična polja forme.
+    const formData = new FormData()
 
-    // Uređivanje postojećeg proizvoda
-    if (editing.value) {
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, String(value))
+      }
+    })
 
-      await api.put(
-        `/proizvodi/${route.params.id}`,
-        form
-      )
-
+    // Ako je korisnik odabrao novu sliku, dodaj je u isti zahtjev.
+    if (imageFile.value) {
+      formData.append('slika', imageFile.value)
     }
 
-    // Dodavanje novog proizvoda
-    else {
-
+    if (editing.value) {
+      await api.put(
+        `/proizvodi/${route.params.id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      )
+    } else {
       await api.post(
         '/proizvodi',
-        form
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       )
-
     }
 
     $q.notify({
@@ -318,7 +386,6 @@ async function save() {
     })
 
     router.push('/admin/proizvodi')
-
   } catch (error) {
     console.error(
       'Greška pri spremanju proizvoda:',
@@ -331,7 +398,6 @@ async function save() {
         error.response?.data?.message ||
         'Spremanje proizvoda nije uspjelo.'
     })
-
   } finally {
     loading.value = false
   }
@@ -346,3 +412,13 @@ onMounted(() => {
   load()
 })
 </script>
+
+<style scoped>
+.product-image-preview {
+  width: 260px;
+  height: 180px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+</style>
